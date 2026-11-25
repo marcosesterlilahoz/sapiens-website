@@ -2,10 +2,10 @@
 import pathlib
 src=pathlib.Path(__file__).parent.parent/'v3'/'concept-d.html'
 s=src.read_text()
-s=s.replace('<title>Sapiens — Concept D</title>','<title>Sapiens — Robotics as a Service</title>',1)
-s=s.replace("document.title=name+' \\u2014 Concept D';","document.title=name+' \\u2014 Robotics as a Service';")
+s=s.replace('<title>Sapiens — Concept D</title>','<title>Sapiens | Robotics as a Service</title>',1)
+s=s.replace("document.title=name+' \\u2014 Concept D';","document.title=name+' | Robotics as a Service';")
 assert 'Concept D' not in s
-og='''<meta property="og:title" content="Sapiens — Robotics as a Service">
+og='''<meta property="og:title" content="Sapiens | Robotics as a Service">
 <meta property="og:description" content="We buy proven robots from the world's leading manufacturers, install them on your line and run them for you. One monthly fee.">
 <meta property="og:url" content="https://sapiensrobotics.ai/">
 <link rel="canonical" href="https://sapiensrobotics.ai/">
