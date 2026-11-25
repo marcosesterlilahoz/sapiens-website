@@ -9,11 +9,16 @@ og='''<meta property="og:title" content="Sapiens | Robotics as a Service">
 <meta property="og:description" content="We buy proven robots from the world's leading manufacturers, install them on your line and run them for you. One monthly fee.">
 <meta property="og:url" content="https://sapiensrobotics.ai/">
 <link rel="canonical" href="https://sapiensrobotics.ai/">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23002663'/%3E%3Ctext x='16' y='22' font-family='Arial' font-weight='700' font-size='18' fill='%23fff' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
+<link rel="icon" type="image/png" sizes="64x64" href="favicon.png?v=2">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 '''
 s=s.replace('</title>','</title>\n'+og,1)
 here=pathlib.Path(__file__).parent
 (here/'index.html').write_text(s)
+import shutil
+for d in (here, here.parent/'deploy-industries'):
+    for f in ('favicon.png','apple-touch-icon.png'):
+        shutil.copy(here.parent/'v3'/'icons'/f, d/f)
 # mirror for sapiens.industries: same page, own og:url (canonical stays on sapiensrobotics.ai)
 s2=s.replace('<meta property="og:url" content="https://sapiensrobotics.ai/">','<meta property="og:url" content="https://sapiens.industries/">')
 (here.parent/'deploy-industries'/'index.html').write_text(s2)
