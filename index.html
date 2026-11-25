@@ -495,6 +495,23 @@ h1,h2,h3{font-family:var(--display);font-weight:500;letter-spacing:-.025em}
   .bot{padding:16px 8px 12px}
 }
 .marquee .lg-silverpoint{height:58px;opacity:.75}
+/* two audience boxes (replaces data card, why grid, steps, band) */
+.aud-sec{padding-top:0}
+.aud{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.aud-card{position:relative;background:#fff;border:1px solid var(--line2);border-radius:var(--r);padding:clamp(24px,3vw,40px);display:flex;flex-direction:column;min-width:0}
+.aud-card::after{content:"";position:absolute;inset:-1px;pointer-events:none;background:var(--brk);background-repeat:no-repeat;border-radius:var(--r)}
+.aud-head{display:flex;align-items:center;gap:18px}
+.aud-card .data-icon{margin:0;width:60px;height:60px;flex:none}
+.aud-card .data-glyph{width:42px;height:42px}
+.aud-card h3{margin-top:24px;font-size:clamp(22px,2.1vw,29px);font-weight:500;line-height:1.15;letter-spacing:-.03em}
+.aud-card h3 .soft{color:var(--muted)}
+.aud-card > p{margin-top:12px;color:var(--muted);font:400 13.5px/1.7 var(--mono);letter-spacing:-.015em;max-width:460px}
+.aud-list{list-style:none;margin:24px 0 0;padding:18px 0 0;border-top:1px solid var(--line2);display:grid;gap:10px}
+.aud-list li{display:flex;align-items:center;gap:12px;font:500 13px/1.4 var(--mono);letter-spacing:-.01em;color:var(--navy)}
+.aud-list li::before{content:"";width:6px;height:6px;background:var(--orange);flex:none}
+@media (max-width:900px){.aud{grid-template-columns:1fr}}
+/* wider frame: boxes reach almost the full screen */
+:root{--gutter:clamp(14px,2vw,32px);--maxw:1760px}
 </style>
 </head>
 <body>
@@ -586,11 +603,25 @@ h1,h2,h3{font-family:var(--display);font-weight:500;letter-spacing:-.025em}
     </div>
   </section>
 
-  <section class="section data-sec" id="data" aria-labelledby="data-title">
+  <section class="section aud-sec" id="data" aria-label="Who we work with">
     <div class="wrap">
-      <div class="data-card">
-        <div class="data-icon">
-          <svg class="data-glyph" viewBox="0 0 56 56" aria-hidden="true" focusable="false">
+      <div class="aud">
+        <article class="aud-card">
+          <div class="aud-head">
+            <div class="data-icon"><svg class="data-glyph" viewBox="0 0 56 56" aria-hidden="true" focusable="false"><path d="M9 45V27l10 6v-6l10 6v-6l10 6V13h7v32Z"/><path class="ln" d="M5 45h46"/><rect x="14" y="37" width="5" height="4" rx=".8"/><rect x="24" y="37" width="5" height="4" rx=".8"/><rect x="34" y="37" width="5" height="4" rx=".8"/><rect class="ac" x="40.5" y="8" width="4" height="3" rx=".6"/></svg></div>
+            <p class="eyebrow">For factories and companies</p>
+          </div>
+          <h3>The jobs you can't staff. <span class="soft">Done on every shift.</span></h3>
+          <p>We assess your floor, deploy the right robot and run it for one monthly fee.</p>
+          <ul class="aud-list">
+            <li>No capex, no integration risk</li>
+            <li>Safer floors, steadier output</li>
+            <li>We only win when your robots run</li>
+          </ul>
+        </article>
+        <article class="aud-card">
+          <div class="aud-head">
+            <div class="data-icon"><svg class="data-glyph" viewBox="0 0 56 56" aria-hidden="true" focusable="false">
             <path class="ln" d="M40.93 11.45 A21 21 0 1 1 15.07 11.45"/>
             <path class="ln" d="M10.48 11.13 L15.07 11.45 L14.27 15.98"/>
             <text x="28" y="10.6" text-anchor="middle">1 0 1</text>
@@ -599,48 +630,19 @@ h1,h2,h3{font-family:var(--display);font-weight:500;letter-spacing:-.025em}
             <path class="ln" d="M22.5 36.5 L25.5 23 L37.2 26.5 M37.2 26.5 V30.5 M34.8 30.5 H39.6 M34.8 30.5 v3.4 M39.6 30.5 v3.4"/>
             <circle cx="22.5" cy="36.5" r="2.3"/><circle cx="25.5" cy="23" r="2.2"/>
             <g class="orbit" style="transform-origin:28px 28px"><circle class="ac" cx="28" cy="7" r="2"/></g>
-          </svg>
-        </div>
-        <p class="eyebrow">For robot makers and model labs</p>
-        <h2 id="data-title">Tested on real factory floors.</h2>
-        <p class="data-copy">We run robots from the leading manufacturers in real factories, shift after shift. Every success and every intervention helps us fine-tune the models we run. We also work with robot makers and model labs: feedback from the field, evaluation on real tasks and help building their next models.</p>
-        <ul class="data-points">
-          <li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5 20V11l5 3v-3l5 3v-3l5 3V4.5h2.5V20M2 20h20"/></svg><span>Real shifts, real factories</span></li>
-          <li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5 4.5h7.2l9.3 9.3-6.2 6.2-9.3-9.3Z"/><circle cx="8" cy="9" r="1.4"/></svg><span>Every intervention labeled</span></li>
-          <li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 8.5h13M14.5 5l3.5 3.5-3.5 3.5M19 15.5H6M9.5 12 6 15.5 9.5 19"/></svg><span>Field feedback and model building</span></li>
-        </ul>
+          </svg></div>
+            <p class="eyebrow">For robot makers and model labs</p>
+          </div>
+          <h3>Tested on real factory floors. <span class="soft">Better models.</span></h3>
+          <p>We run robots in real factories, shift after shift, and work with their makers on what we learn.</p>
+          <ul class="aud-list">
+            <li>Real shifts, real factories</li>
+            <li>Every intervention labeled</li>
+            <li>Field feedback and model building</li>
+          </ul>
+        </article>
       </div>
     </div>
-  </section>
-
-  <section class="section why-sec" aria-labelledby="why-title">
-    <div class="wrap">
-      <header class="sec-head">
-        <p class="eyebrow" id="why-title">Why factories work with us</p>
-        <h2>The jobs you can't staff. <span class="soft">Done on every shift.</span></h2>
-      </header>
-      <div class="why">
-        <div class="why-item"><h3>Hard-to-fill roles</h3><p>Robots take the repetitive jobs that turn over fastest, so your people move to setup, quality and growth.</p></div>
-        <div class="why-item"><h3>Safer floors</h3><p>Move workers off high-strain, injury-prone tasks and keep your experienced operators longer.</p></div>
-        <div class="why-item"><h3>Output you can plan</h3><p>Consistent cycle times on every shift, nights and weekends included.</p></div>
-        <div class="why-item"><h3>Zero capital risk</h3><p>One monthly fee instead of a capital project. No depreciation, no obsolete equipment.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section steps-sec" aria-labelledby="how-title">
-    <div class="wrap">
-      <header class="sec-head"><p class="eyebrow" id="how-title">How it works</p></header>
-      <ol class="steps">
-        <li><span class="node"></span><h3>Assess</h3><p>We walk your floor and pick the jobs robots already do well.</p></li>
-        <li><span class="node"></span><h3>Deploy</h3><p>We bring the best robot for the job, install it and run it for you.</p></li>
-        <li><span class="node"></span><h3>Improve</h3><p>Every shift makes the next robot smarter and cheaper.</p></li>
-      </ol>
-    </div>
-  </section>
-
-  <section class="band" aria-label="Our belief">
-    <div class="wrap"><p class="band-line">We only win when your robots are running.</p><p class="band-sub">Robot arms and mobile robots today. Humanoids when they are ready for your floor.</p></div>
   </section>
 
   <section class="section about" id="about" aria-labelledby="about-title">
