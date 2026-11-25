@@ -342,6 +342,34 @@ html{scroll-padding-top:96px}
 .data-points svg{flex:none;width:24px;height:24px;fill:none;stroke:var(--navy);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 @media (max-width:760px){.data-points{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){.bot-svg .mv,.bot-label{transition:none}.bot:hover .mv{transform:none}}
+
+/* compact pass (less white space) */
+.section{padding:clamp(48px,5.5vw,80px) 0}
+.duo{margin-top:clamp(28px,3.5vw,44px)}
+.card-kicker{padding-top:32px}
+.steps{margin-top:clamp(24px,3vw,36px)}
+.band .wrap{padding-top:clamp(60px,7.5vw,100px);padding-bottom:clamp(60px,7.5vw,100px)}
+.contact .wrap{padding-top:clamp(64px,8vw,104px);padding-bottom:clamp(52px,6.5vw,84px)}
+.why{margin-top:clamp(24px,3vw,36px)}
+.lineup{margin-top:clamp(28px,3.5vw,44px);row-gap:36px}
+.about-kicker{margin-top:32px}
+.about-lede{margin-top:20px}
+.sec-head h2{margin-top:14px}
+/* robots drawn in 0/1 glyphs; hover decodes to the line drawing */
+.bot-fig{position:relative}
+.bot-bits{position:absolute;pointer-events:none;transition:opacity .45s var(--ease, ease)}
+.lineup.bits-on .bot-svg{opacity:0;transition:opacity .45s var(--ease, ease)}
+.lineup.bits-on .bot:hover .bot-svg,.lineup.bits-on .bot.decoded .bot-svg{opacity:1}
+.lineup.bits-on .bot:hover .bot-bits,.lineup.bits-on .bot.decoded .bot-bits{opacity:0}
+
+/* what we do: one-line heading, icon left of the card title */
+#what .sec-head{max-width:none}
+@media (min-width:900px){#what .sec-head h2{white-space:nowrap;font-size:clamp(30px,3.35vw,48px)}}
+.card{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:20px;align-content:start;min-height:0}
+.card-mark{grid-row:1 / span 2;align-self:center;width:52px;height:52px}
+.card-kicker{grid-column:2;margin-top:0;padding-top:0;align-self:end}
+.card h3{grid-column:2;margin-top:8px}
+.card p.body{grid-column:1 / -1;margin-top:20px;max-width:none}
 </style>
 </head>
 <body>
@@ -1488,6 +1516,59 @@ window.addEventListener("scroll",function(){if(window.scrollY<120)set(null);},{p
 <script>
 (function(){var t=document.querySelector('.marquee-track'); if(!t) return;
 [].slice.call(t.children).forEach(function(img){var c=img.cloneNode(true); c.alt=''; c.setAttribute('aria-hidden','true'); t.appendChild(c);});})();
+</script>
+<script>
+/* Robots for the real world: render each line robot as a field of 0/1 glyphs. Hover (or tap) decodes it to the drawing. */
+(function(){
+  var list=document.querySelector('.lineup'); if(!list) return;
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var CELL=5.5, bots=[];
+  function inlineStyles(src,dst){var cs=getComputedStyle(src);['fill','stroke','stroke-width','stroke-linecap','stroke-linejoin','opacity','fill-opacity','stroke-opacity'].forEach(function(k){dst.style.setProperty(k,cs.getPropertyValue(k));});
+    for(var i=0;i<src.children.length;i++) inlineStyles(src.children[i],dst.children[i]);}
+  function build(li){
+    var svg=li.querySelector('.bot-svg'), fig=li.querySelector('.bot-fig'); if(!svg||!fig) return;
+    var r=svg.getBoundingClientRect(), fr=fig.getBoundingClientRect(); if(r.width<10) return;
+    var W=Math.round(r.width), H=Math.round(r.height), dpr=Math.min(2,devicePixelRatio||1);
+    var clone=svg.cloneNode(true); inlineStyles(svg,clone);
+    clone.setAttribute('xmlns','http://www.w3.org/2000/svg'); clone.setAttribute('width',W); clone.setAttribute('height',H);
+    clone.querySelectorAll('.mv').forEach(function(g){g.style.transform='none';});
+    var img=new Image();
+    img.onload=function(){
+      var S=3, off=document.createElement('canvas'); off.width=W*S; off.height=H*S;
+      var oc=off.getContext('2d',{willReadFrequently:true}); oc.drawImage(img,0,0,W*S,H*S);
+      var d=oc.getImageData(0,0,off.width,off.height).data, cols=Math.ceil(W/CELL), rows=Math.ceil(H/CELL), cells=[];
+      for(var j=0;j<rows;j++) for(var i=0;i<cols;i++){
+        var best=0, kind=0, x0=Math.floor(i*CELL*S), y0=Math.floor(j*CELL*S), x1=Math.min(off.width,Math.floor((i+1)*CELL*S)), y1=Math.min(off.height,Math.floor((j+1)*CELL*S));
+        for(var y=y0;y<y1;y+=2) for(var x=x0;x<x1;x+=2){var k=(y*off.width+x)*4, a=d[k+3]; if(a<60) continue;
+          var R=d[k],G=d[k+1],B=d[k+2], dark=R+G+B<300, orange=R>200&&G<150&&B<80;
+          var v=orange?3:(dark?2:1); if(v>kind){kind=v;} }
+        if(kind) cells.push({i:i,j:j,k:kind,g:Math.random()<.5?'0':'1'});
+      }
+      var cv=document.createElement('canvas'); cv.className='bot-bits'; cv.setAttribute('aria-hidden','true');
+      cv.width=W*dpr; cv.height=H*dpr; cv.style.width=W+'px'; cv.style.height=H+'px';
+      cv.style.left=(r.left-fr.left)+'px'; cv.style.top=(r.top-fr.top)+'px';
+      fig.appendChild(cv);
+      var b={cv:cv,ctx:cv.getContext('2d'),cells:cells,dpr:dpr}; draw(b); bots.push(b);
+      list.classList.add('bits-on');
+    };
+    img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(new XMLSerializer().serializeToString(clone));
+  }
+  function draw(b){
+    var c=b.ctx; c.setTransform(b.dpr,0,0,b.dpr,0,0); c.clearRect(0,0,b.cv.width,b.cv.height);
+    c.font='500 '+(CELL*1.05).toFixed(1)+'px "IBM Plex Mono", ui-monospace, Menlo, monospace'; c.textAlign='center'; c.textBaseline='middle';
+    for(var n=0;n<b.cells.length;n++){var e=b.cells[n];
+      c.fillStyle=e.k===3?'#FF6A13':(e.k===2?'rgba(0,38,99,.95)':'rgba(0,38,99,.32)');
+      c.fillText(e.g,e.i*CELL+CELL/2,e.j*CELL+CELL/2+.5);}
+  }
+  function init(){ list.querySelectorAll('.bot').forEach(build); }
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(init); else init();
+  // touch: tap toggles the decoded drawing
+  list.addEventListener('click',function(e){var li=e.target.closest('.bot'); if(li) li.classList.toggle('decoded');});
+  // gentle life: a few digits flip while the section is on screen
+  if(!reduce){ var vis=false; new IntersectionObserver(function(es){vis=es[0].isIntersecting;}).observe(list);
+    setInterval(function(){ if(!vis||document.hidden) return; bots.forEach(function(b){ var n=Math.ceil(b.cells.length*.03); for(var q=0;q<n;q++){var e=b.cells[(Math.random()*b.cells.length)|0]; e.g=e.g==='0'?'1':'0';} draw(b); }); },180); }
+  var rt; addEventListener('resize',function(){clearTimeout(rt); rt=setTimeout(function(){ list.querySelectorAll('.bot-bits').forEach(function(c){c.remove();}); bots=[]; list.classList.remove('bits-on'); init(); },250);});
+})();
 </script>
 </body>
 </html>
